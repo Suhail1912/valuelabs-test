@@ -5,6 +5,8 @@ env:
     BRANCH: "master"
     AWS_ECR_URL: "435796599109.dkr.ecr.ap-south-1.amazonaws.com"
     REPO_URL: "435796599109.dkr.ecr.ap-south-1.amazonaws.com/tracker-app"
+    AWS_ACCESS_KEY_ID: "ABC"
+    AWS_SECRET_ACCESS_KEY: "XYZ"
     AWS_DEFAULT_REGION: "ap-south-1"
 
 phases: 
