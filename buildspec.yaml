@@ -1,0 +1,37 @@
+version: 0.2
+    
+env:
+  variables:
+    BRANCH: "master"
+    AWS_ECR_URL: "435796599109.dkr.ecr.ap-south-1.amazonaws.com"
+    REPO_URL: "435796599109.dkr.ecr.ap-south-1.amazonaws.com/tracker-app"
+    AWS_ACCESS_KEY_ID: "AKIAWK54AMFC7AVPGA5K"
+    AWS_SECRET_ACCESS_KEY: "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"
+    AWS_DEFAULT_REGION: "ap-south-1"
+
+phases: 
+  pre_build: 
+    commands:
+      - docker --version
+      - java -version
+      - "echo ****** Stepping to Code Build ******"
+  build: 
+    commands: 
+      - "echo Build started on `date`"
+      - mvn package
+      - TIMEINMILLSEC=$CODEBUILD_START_TIME
+      - "echo TimeinMillsec: $TIMEINMILLSEC"
+      - "echo Build Number: $CODEBUILD_BUILD_NUMBER"
+      - "echo Build ID: $CODEBUILD_BUILD_ID"
+      - "echo Build image: $CODEBUILD_BUILD_IMAGE"
+      - docker build -t $BRANCH:$TIMEINMILLSEC .
+      - docker tag $BRANCH:$TIMEINMILLSEC $REPO_URL:$BRANCH-$TIMEINMILLSEC
+      - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ECR_URL
+      - docker push $REPO_URL:$BRANCH-$TIMEINMILLSEC
+      - echo [{\"name\":\"tracker-app\"\,\"imageUri\":\"$REPO_URL:$BRANCH-$TIMEINMILLSEC\"}] > imagedefinitions.json
+      - cat imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json
