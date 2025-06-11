@@ -75,7 +75,6 @@ public class TrackingService {
         return (req.getOriginCountry() + "|" +
                 req.getDestinationCountry() + "|" +
                 req.getWeight() + "|" +
-                req.getCreatedDateTime().getTime() + "|" + 
                 req.getCustomerId() + "|" +
                 req.getCustomerName() + "|" +
                 req.getCustomerSlug() + "|" +
